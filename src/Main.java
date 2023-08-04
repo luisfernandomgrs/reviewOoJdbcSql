@@ -15,35 +15,35 @@ public class Main {
 
         Statement st = conn.createStatement();
 
-        ResultSet rs = st.executeQuery("select * from tb_order");
+        ResultSet rs = st.executeQuery("SELECT * FROM tb_order " +
+                "INNER JOIN tb_order_product ON tb_order.id = tb_order_product.order_id " +
+                "INNER JOIN tb_product ON tb_product.id = tb_order_product.product_id");
 
         while (rs.next()) {
             Order order = instantiateOrder(rs);
             System.out.println(order);
         }
     }
-
-    private static Product instantiateProduct(ResultSet rs) throws SQLException {
-        Product product = new Product();
-
-        product.setId(rs.getLong("id"));
-        product.setDescription(rs.getString("description"));
-        product.setImage_uri(rs.getString("image_uri"));
-        product.setName(rs.getString("name"));
-        product.setPrice(rs.getDouble("price"));
-
-        return product;
-    }
-
     private static Order instantiateOrder(ResultSet rs) throws SQLException {
         Order order = new Order();
 
-        order.setId(rs.getLong("id"));
+        order.setId(rs.getLong("order_id"));
         order.setLatitude(rs.getDouble("latitude"));
         order.setLongitude(rs.getDouble("longitude"));
         order.setMoment(rs.getTimestamp("moment").toInstant());
         order.setStatus(OrderStatus.values()[rs.getInt("status")]);
 
         return order;
+    }
+    private static Product instantiateProduct(ResultSet rs) throws SQLException {
+        Product product = new Product();
+
+        product.setId(rs.getLong("product_id"));
+        product.setDescription(rs.getString("description"));
+        product.setImage_uri(rs.getString("image_uri"));
+        product.setName(rs.getString("name"));
+        product.setPrice(rs.getDouble("price"));
+
+        return product;
     }
 }
