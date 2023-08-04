@@ -1,4 +1,6 @@
 import db.DB;
+import entities.Order;
+import entities.OrderStatus;
 import entities.Product;
 
 import java.sql.Connection;
@@ -13,11 +15,11 @@ public class Main {
 
         Statement st = conn.createStatement();
 
-        ResultSet rs = st.executeQuery("select * from tb_product");
+        ResultSet rs = st.executeQuery("select * from tb_order");
 
         while (rs.next()) {
-            Product p = instantiateProduct(rs);
-            System.out.println(p);
+            Order order = instantiateOrder(rs);
+            System.out.println(order);
         }
     }
 
@@ -31,5 +33,17 @@ public class Main {
         product.setPrice(rs.getDouble("price"));
 
         return product;
+    }
+
+    private static Order instantiateOrder(ResultSet rs) throws SQLException {
+        Order order = new Order();
+
+        order.setId(rs.getLong("id"));
+        order.setLatitude(rs.getDouble("latitude"));
+        order.setLongitude(rs.getDouble("longitude"));
+        order.setMoment(rs.getTimestamp("moment").toInstant());
+        order.setStatus(OrderStatus.values()[rs.getInt("status")]);
+
+        return order;
     }
 }
