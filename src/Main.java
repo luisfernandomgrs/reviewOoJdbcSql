@@ -1,4 +1,5 @@
 import db.DB;
+import entities.Product;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,7 +16,20 @@ public class Main {
         ResultSet rs = st.executeQuery("select * from tb_product");
 
         while (rs.next()) {
-            System.out.println(rs.getLong("Id") + ", " + rs.getString("Name"));
+            Product p = instantiateProduct(rs);
+            System.out.println(p);
         }
+    }
+
+    private static Product instantiateProduct(ResultSet rs) throws SQLException {
+        Product product = new Product();
+
+        product.setId(rs.getLong("id"));
+        product.setDescription(rs.getString("description"));
+        product.setImage_uri(rs.getString("image_uri"));
+        product.setName(rs.getString("name"));
+        product.setPrice(rs.getDouble("price"));
+
+        return product;
     }
 }
